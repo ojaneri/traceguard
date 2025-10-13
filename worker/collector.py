@@ -170,13 +170,13 @@ def generate_pdf_report(outdir: Path, data: dict, screenshot_path: Path):
 
     # Logo
     try:
-        logo_path = Path(__file__).parent.parent / 'public' / 'logo.png'
+        logo_path = Path(__file__).parent.parent / 'logo.png'
         if logo_path.exists():
-            # Mantém proporções originais (largura baseada na altura)
-            logo = Image(str(logo_path), height=1.2*cm)
+            # Mantém proporções originais com altura menor
+            logo = Image(str(logo_path), height=1.5*cm)
             logo.hAlign = 'CENTER'
             story.append(logo)
-            story.append(Spacer(1, 10))
+            story.append(Spacer(1, 15))
     except Exception as e:
         pass  # Continua sem logo se houver erro
 
@@ -213,11 +213,26 @@ def generate_pdf_report(outdir: Path, data: dict, screenshot_path: Path):
     # Screenshot
     if screenshot_path.exists():
         try:
-            # Mantém proporções originais do screenshot
-            img = Image(str(screenshot_path), height=10*cm)
-            img.hAlign = 'CENTER'
+            # Mantém proporções originais do screenshot (16:9)
+            from PIL import Image as PILImage
+            with PILImage.open(str(screenshot_path)) as img:
+                width, height = img.size
+                aspect_ratio = width / height
+
+            # Calcula largura baseada na altura desejada mantendo proporções
+            target_height = 12*cm
+            target_width = target_height * aspect_ratio
+
+            # Se a largura for muito grande, ajusta
+            max_width = 16*cm
+            if target_width > max_width:
+                target_width = max_width
+                target_height = target_width / aspect_ratio
+
+            screenshot_img = Image(str(screenshot_path), width=target_width, height=target_height)
+            screenshot_img.hAlign = 'CENTER'
             story.append(Paragraph("CAPTURA DE TELA", section_style))
-            story.append(img)
+            story.append(screenshot_img)
             story.append(Spacer(1, 20))
         except Exception as e:
             story.append(Paragraph(f"Erro ao carregar screenshot: {str(e)}", styles['Normal']))
