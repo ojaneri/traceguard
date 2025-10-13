@@ -2,9 +2,12 @@
 
 **O que faz:** Recebe uma URL → faz **screenshot** em navegador headless, coleta **headers HTTP**, **DNS/WHOIS**, **TLS/certificado**, registra **timestamp UTC** e dados do solicitante (IP/UA), calcula **SHA-256** de cada artefato e gera um **ZIP** com tudo + `manifest.json` para preservar a **cadeia de custódia**.
 
-## Rodando
+## 🌐 Demonstração
+**Acesse:** [https://janeri.com.br/sistemas/traceguard/](https://janeri.com.br/sistemas/traceguard/)
+
+## Setup (apenas uma vez)
 ```bash
-make setup
+make setup  # Instala dependências Python e Playwright
 ```
 
 ## Saída
@@ -33,5 +36,3 @@ cryptography==43.0.1
 ```
 
 Após instalar, rodar: `python -m playwright install --with-deps chromium`
-
-Veja versão demo online - https://janeri.com.br/sistemas/traceguard

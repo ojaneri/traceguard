@@ -5,9 +5,6 @@
 ## 🌐 Demonstração
 **Acesse:** [https://janeri.com.br/sistemas/traceguard/](https://janeri.com.br/sistemas/traceguard/)
 
-## Acesso
-A aplicação está disponível em: **https://janeri.com.br/sistemas/traceguard/**
-
 ## Setup (apenas uma vez)
 ```bash
 make setup  # Instala dependências Python e Playwright
@@ -21,10 +18,6 @@ Pasta `storage/{GUID}/` contendo:
 - `manifest.json` (metadados + cadeia de custódia)
 - `traceguard_{GUID}.zip` (pacote completo)
 
-## Salvando no GitHub
-```bash
-./salvar-git.sh 0.1
-```
 
 ## Stack
 - **Frontend:** HTML5 + CSS puro + JS mínimo (form + feedback)
