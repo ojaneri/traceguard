@@ -5,8 +5,6 @@
 ## Rodando
 ```bash
 make setup
-make serve
-# acesse http://localhost:8080
 ```
 
 ## Saída
@@ -17,10 +15,6 @@ Pasta `storage/{GUID}/` contendo:
 - `manifest.json` (metadados + cadeia de custódia)
 - `traceguard_{GUID}.zip` (pacote completo)
 
-## Salvando no GitHub
-```bash
-./salvar-git.sh 0.1
-```
 
 ## Stack
 - **Frontend:** HTML5 + CSS puro + JS mínimo (form + feedback)
@@ -39,3 +33,5 @@ cryptography==43.0.1
 ```
 
 Após instalar, rodar: `python -m playwright install --with-deps chromium`
+
+Veja versão demo online - https://janeri.com.br/sistemas/traceguard
