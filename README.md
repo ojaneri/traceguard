@@ -1,0 +1,41 @@
+# TraceGuard 🔒 (Web Evidence Snapshot)
+
+**O que faz:** Recebe uma URL → faz **screenshot** em navegador headless, coleta **headers HTTP**, **DNS/WHOIS**, **TLS/certificado**, registra **timestamp UTC** e dados do solicitante (IP/UA), calcula **SHA-256** de cada artefato e gera um **ZIP** com tudo + `manifest.json` para preservar a **cadeia de custódia**.
+
+## Rodando
+```bash
+make setup
+make serve
+# acesse http://localhost:8080
+```
+
+## Saída
+Pasta `storage/{GUID}/` contendo:
+- `screenshot.png`
+- `http_headers.json`, `dns.json`, `whois.json`, `tls.json`
+- `hashes.json` (sha256 de cada arquivo)
+- `manifest.json` (metadados + cadeia de custódia)
+- `traceguard_{GUID}.zip` (pacote completo)
+
+## Salvando no GitHub
+```bash
+./salvar-git.sh 0.1
+```
+
+## Stack
+- **Frontend:** HTML5 + CSS puro + JS mínimo (form + feedback)
+- **Servidor web:** PHP (arquivos únicos, sem MVC/framework)
+- **Worker:** Python 3.11 (Playwright para screenshot + coletas)
+- **Zip/Manifest:** gerado no PHP (ZipArchive) com manifest.json
+- **Sem banco (MVP)** — pastas com GUID por coleta
+
+## Dependências Python (worker/requirements.txt)
+```
+playwright==1.47.0
+httpx==0.27.2
+dnspython==2.6.1
+python-whois==0.9.4
+cryptography==43.0.1
+```
+
+Após instalar, rodar: `python -m playwright install --with-deps chromium`
