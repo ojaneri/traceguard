@@ -1,0 +1,4 @@
+/storage/*
+!.gitkeep
+__pycache__/
+*.pyc

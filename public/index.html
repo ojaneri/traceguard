@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>TraceGuard – Coleta Web com Cadeia de Custódia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="./style.css" rel="stylesheet">
+</head>
+<body>
+<header><h1>TraceGuard</h1></header>
+<main>
+  <div class="card">
+    <p class="small">Informe a URL a ser coletada. O sistema fará screenshot, coletará headers HTTP, WHOIS/DNS/TLS, calculará SHA-256 e gerará um ZIP com todos os artefatos + manifest.json.</p>
+    <form action="collect.php" method="post">
+      <label>URL alvo:
+        <input type="url" name="url" placeholder="https://exemplo.com/pagina" required>
+      </label>
+      <button type="submit">Coletar e gerar ZIP</button>
+    </form>
+  </div>
+</main>
+<footer><small>© 2025 TraceGuard – MVP educacional</small></footer>
+</body>
+</html>
