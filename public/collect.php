@@ -65,5 +65,17 @@ foreach ($files as $f) {
 }
 $zip->close();
 
+// Adiciona metadados ao ZIP para fins jurídicos
+$zipMetadata = $outDir . '/zip_metadata.json';
+$metadata = [
+  'created_at' => date('Y-m-d H:i:s T'),
+  'tool' => 'TraceGuard',
+  'author' => 'Osvaldo Janeri Filho',
+  'purpose' => 'Evidência digital para fins jurídicos',
+  'contents' => array_diff(scandir($outDir), ['.', '..', '.zip']),
+  'sha256' => hash_file('sha256', $zipPath)
+];
+file_put_contents($zipMetadata, json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
 // Redireciona para página de download
 header('Location: download.php?id=' . urlencode($runId));

@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-import argparse, json, hashlib, socket, ssl, datetime, os, base64
+import argparse, json, hashlib, socket, ssl, datetime, os, base64, re
 from pathlib import Path
 import httpx, whois, dns.resolver
 from playwright.sync_api import sync_playwright
+from reportlab.lib.pagesizes import A4, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch, cm
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 
 def sha256_file(p: Path) -> str:
     h = hashlib.sha256()
@@ -56,6 +62,278 @@ def take_screenshot(url: str, out_png: Path, width=1366, height=768):
 
 def write_json(p: Path, data: dict):
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def render_template(template_path: Path, data: dict) -> str:
+    """Renderiza template HTML com os dados coletados"""
+    with open(template_path, 'r', encoding='utf-8') as f:
+        template = f.read()
+
+    # Função auxiliar para verificar igualdade
+    def eq(a, b):
+        return a == b
+
+    # Função auxiliar para obter tamanho
+    def length(s):
+        return len(str(s))
+
+    # Adiciona funções ao ambiente de dados
+    data['eq'] = eq
+    data['length'] = length
+
+    # Processa template simples (substituição de variáveis)
+    for key, value in data.items():
+        if isinstance(value, dict):
+            # Trata dicionários especiais (headers, whois, etc.)
+            for dict_key, dict_value in value.items():
+                template = re.sub(
+                    r'\{\{#each ' + re.escape(key) + r'\}\}(.*?)\{\{\/each\}\}',
+                    lambda m, k=dict_key, v=dict_value: process_each_section(m.group(1), {k: v}),
+                    template,
+                    flags=re.DOTALL
+                )
+        elif isinstance(value, list):
+            # Trata listas
+            template = re.sub(
+                r'\{\{#each ' + re.escape(key) + r'\}\}(.*?)\{\{\/each\}\}',
+                lambda m, items=value: process_each_list(m.group(1), items),
+                template,
+                flags=re.DOTALL
+            )
+        else:
+            # Substituição simples
+            template = template.replace(f'{{{{{key}}}}}', str(value))
+
+    return template
+
+def process_each_section(template_section: str, data: dict) -> str:
+    """Processa seções {{#each dict}}"""
+    result = []
+    for key, value in data.items():
+        # Substitui {{@key}} e {{this}}
+        section = template_section.replace('{{@key}}', str(key))
+        section = section.replace('{{this}}', str(value))
+        result.append(section)
+    return ''.join(result)
+
+def process_each_list(template_section: str, items: list) -> str:
+    """Processa seções {{#each list}}"""
+    if not items:
+        return "Nenhum item encontrado"
+
+    result = []
+    for i, item in enumerate(items):
+        # Substitui {{this}} e verifica se é o último item
+        section = template_section.replace('{{this}}', str(item))
+        section = section.replace('{{#unless @last}}', '' if i == len(items) - 1 else '')
+        section = section.replace('{{/unless}}', '' if i == len(items) - 1 else '')
+        result.append(section)
+    return ''.join(result)
+
+def generate_pdf_report(outdir: Path, data: dict, screenshot_path: Path):
+    """Gera relatório PDF profissional usando ReportLab"""
+    pdf_path = outdir / 'relatorio_traceguard.pdf'
+
+    # Cria o documento PDF
+    doc = SimpleDocTemplate(str(pdf_path), pagesize=A4)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Estilos personalizados
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Title'],
+        fontSize=24,
+        spaceAfter=30,
+        alignment=TA_CENTER,
+        textColor=colors.darkblue
+    )
+
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Normal'],
+        fontSize=14,
+        spaceAfter=20,
+        alignment=TA_CENTER,
+        textColor=colors.gray
+    )
+
+    section_style = ParagraphStyle(
+        'SectionTitle',
+        parent=styles['Heading1'],
+        fontSize=16,
+        spaceAfter=12,
+        textColor=colors.darkgreen,
+        borderColor=colors.darkgreen,
+        borderWidth=0,
+        borderPadding=5
+    )
+
+    # Logo
+    try:
+        logo_path = Path(__file__).parent.parent / 'public' / 'logo.png'
+        if logo_path.exists():
+            # Mantém proporções originais (largura baseada na altura)
+            logo = Image(str(logo_path), height=1.2*cm)
+            logo.hAlign = 'CENTER'
+            story.append(logo)
+            story.append(Spacer(1, 10))
+    except Exception as e:
+        pass  # Continua sem logo se houver erro
+
+    # Cabeçalho
+    story.append(Paragraph("RELATÓRIO DE ANÁLISE DIGITAL", title_style))
+    story.append(Paragraph("TraceGuard - Sistema de Coleta de Evidências Digitais", subtitle_style))
+    story.append(Spacer(1, 20))
+
+    # Informações do caso
+    story.append(Paragraph("INFORMAÇÕES DO CASO", section_style))
+
+    case_data = [
+        ['URL Solicitada:', data.get('requested_url', 'N/A')],
+        ['URL Final:', data.get('final_url', 'N/A')],
+        ['Timestamp (UTC):', data.get('timestamp_utc', 'N/A')],
+        ['IP do Solicitante:', data.get('requester_ip', 'N/A')],
+        ['User-Agent:', data.get('requester_ua', 'N/A')[:100] + '...' if len(data.get('requester_ua', '')) > 100 else data.get('requester_ua', 'N/A')],
+    ]
+
+    case_table = Table(case_data, colWidths=[3*cm, 12*cm])
+    case_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('WORDWRAP', (0, 0), (-1, -1), 'CJK')  # Habilita quebra de linha
+    ]))
+    story.append(case_table)
+    story.append(Spacer(1, 20))
+
+    # Screenshot
+    if screenshot_path.exists():
+        try:
+            # Mantém proporções originais do screenshot
+            img = Image(str(screenshot_path), height=10*cm)
+            img.hAlign = 'CENTER'
+            story.append(Paragraph("CAPTURA DE TELA", section_style))
+            story.append(img)
+            story.append(Spacer(1, 20))
+        except Exception as e:
+            story.append(Paragraph(f"Erro ao carregar screenshot: {str(e)}", styles['Normal']))
+
+    # Headers HTTP
+    story.append(Paragraph("HEADERS HTTP", section_style))
+    headers = data.get('http_headers', {})
+    if headers:
+        header_data = [['Campo', 'Valor']] + [[k, str(v)[:200] + '...' if len(str(v)) > 200 else str(v)] for k, v in headers.items()]
+        header_table = Table(header_data, colWidths=[4*cm, 10*cm])
+        header_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('WORDWRAP', (0, 0), (-1, -1), 'CJK')  # Habilita quebra de linha
+        ]))
+        story.append(header_table)
+    else:
+        story.append(Paragraph("Nenhum header HTTP disponível", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # WHOIS
+    story.append(Paragraph("INFORMAÇÕES WHOIS", section_style))
+    whois_data = data.get('whois_data', {})
+    if 'error' not in whois_data:
+        whois_items = [[k, str(v)[:200] + '...' if len(str(v)) > 200 else str(v)] for k, v in whois_data.items()]
+        if whois_items:
+            whois_table = Table([['Propriedade', 'Valor']] + whois_items, colWidths=[4*cm, 10*cm])
+            whois_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.darkgreen),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('WORDWRAP', (0, 0), (-1, -1), 'CJK')  # Habilita quebra de linha
+            ]))
+            story.append(whois_table)
+        else:
+            story.append(Paragraph("Nenhum dado WHOIS disponível", styles['Normal']))
+    else:
+        story.append(Paragraph(f"Erro WHOIS: {whois_data['error']}", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # DNS
+    story.append(Paragraph("REGISTROS DNS", section_style))
+    dns_data = data.get('dns_data', {})
+    dns_items = []
+    for record_type, records in dns_data.items():
+        if records:
+            dns_items.append([record_type, ', '.join(records)])
+
+    if dns_items:
+        dns_table = Table([['Tipo', 'Registros']] + dns_items, colWidths=[3*cm, 11*cm])
+        dns_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.darkred),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('WORDWRAP', (0, 0), (-1, -1), 'CJK')  # Habilita quebra de linha
+        ]))
+        story.append(dns_table)
+    else:
+        story.append(Paragraph("Nenhum registro DNS disponível", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # Hashes
+    story.append(Paragraph("HASHES DE VERIFICAÇÃO (SHA-256)", section_style))
+    hashes = data.get('hashes', {})
+    hash_items = [[k, v] for k, v in hashes.items() if v]
+
+    if hash_items:
+        hash_table = Table([['Arquivo', 'Hash SHA-256']] + hash_items, colWidths=[4*cm, 11*cm])
+        hash_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.darkorange),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Courier'),
+            ('FONTSIZE', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('WORDWRAP', (0, 0), (-1, -1), 'CJK')  # Habilita quebra de linha
+        ]))
+        story.append(hash_table)
+    else:
+        story.append(Paragraph("Nenhum hash disponível", styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    # Rodapé com créditos
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=10,
+        textColor=colors.gray,
+        alignment=TA_CENTER,
+        spaceBefore=30
+    )
+
+    story.append(Paragraph("=" * 60, footer_style))
+    story.append(Paragraph("TraceGuard 2025 - Sistema de Coleta de Evidências Digitais", footer_style))
+    story.append(Paragraph("Desenvolvido por Osvaldo Janeri Filho", footer_style))
+    story.append(Paragraph(f"Relatório gerado em: {data.get('timestamp_utc', 'N/A')}", footer_style))
+    story.append(Paragraph("Este documento possui valor probatório para fins jurídicos.", footer_style))
+
+    # Gera o PDF
+    doc.build(story)
+
+    return pdf_path
 
 def main():
     ap = argparse.ArgumentParser()
@@ -127,7 +405,8 @@ def main():
             "whois": "whois.json",
             "dns": "dns.json",
             "tls": "tls.json",
-            "hashes": "hashes.json"
+            "hashes": "hashes.json",
+            "legal_report": "relatorio_traceguard.pdf"
         },
         "notes": {
             "html_captured": False,
@@ -135,6 +414,29 @@ def main():
         }
     }
     write_json(outdir / "manifest.json", manifest)
+
+    # 7) Gera relatório jurídico em PDF
+    report_data = {
+        "tool": "TraceGuard",
+        "version": "0.1.0",
+        "timestamp_utc": ts_iso,
+        "requested_url": args.url,
+        "final_url": headers_obj.get("final_url"),
+        "requester_ip": args.request_ip or "N/A",
+        "requester_ua": args.request_ua or "N/A",
+        "http_headers": headers_obj.get("headers", {}),
+        "whois_data": whois_data,
+        "whois_error": whois_data.get("error") if "error" in whois_data else None,
+        "dns_data": dns_data,
+        "tls_data": tls_data,
+        "tls_error": tls_data.get("error") if "error" in tls_data else None,
+        "hashes": hashes,
+        "html_captured": False,
+        "nav_html_len": nav_info.get("html_len"),
+    }
+
+    pdf_path = generate_pdf_report(outdir, report_data, screenshot_png)
+    print(f"Relatório PDF gerado: {pdf_path}")
 
 if __name__ == "__main__":
     main()

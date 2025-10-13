@@ -1,105 +1,752 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraceGuard - Web Evidence Collector</title>
+    <title>Documentação - TraceGuard</title>
     <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #e5e7eb;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            max-width: 800px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        h1 {
-            color: #3b82f6;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-        }
-        .description {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        .btn {
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            transition: background 0.3s;
-            margin: 10px;
-        }
-        .btn:hover {
-            background: #2563eb;
-        }
-        .btn.secondary {
-            background: transparent;
-            border: 2px solid #3b82f6;
-        }
-        .btn.secondary:hover {
-            background: #3b82f6;
-        }
-        .features {
-            margin-top: 40px;
-            text-align: left;
-        }
-        .features ul {
-            list-style: none;
             padding: 0;
+            box-sizing: border-box;
         }
-        .features li {
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .language-selector select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .language-selector select option {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #495057;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .nav-menu a:hover {
+            background: #e9ecef;
+        }
+
+        .nav-menu a:last-child {
+            border-right: none;
+        }
+
+        .section {
+            display: block;
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .section:target {
+            background: #fff;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin: 30px 0 20px 0;
+            font-size: 2em;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #34495e;
+            margin: 25px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .security-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: inline-block;
             margin: 10px 0;
-            padding-left: 25px;
-            position: relative;
+            font-weight: bold;
         }
-        .features li:before {
-            content: "🔒";
-            position: absolute;
-            left: 0;
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #17a2b8, #007bff);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .concept-card {
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .concept-title {
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .workflow-diagram {
+            background: #28a745;
+            color: white;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .workflow-step {
+            display: inline-block;
+            margin: 10px 20px;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 30px;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        .author {
+            background: linear-gradient(135deg, #e9ecef, #ced4da);
+            color: #495057;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>TraceGuard</h1>
-        <p class="description">
-            Sistema avançado para coleta de evidências web com preservação de cadeia de custódia.
-            Capture screenshots, metadados e gere relatórios completos de qualquer URL.
-        </p>
-
-        <div>
-            <a href="public/" class="btn">🚀 Acessar Aplicação</a>
-            <a href="README.md" class="btn secondary">📖 Documentação</a>
+        <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center;">
+                    <img src="logo.png" alt="TraceGuard Logo" style="height: 150px; width: auto;">
+                </div>
+                <div class="language-selector">
+                    <select id="languageSelect" onchange="changeLanguage()">
+                        <option value="pt">🇧🇷 Português</option>
+                        <option value="en">🇺🇸 English</option>
+                    </select>
+                </div>
+            </div>
+            <div class="subtitle" data-translate="subtitle">Sistema de Coleta de Evidências Digitais</div>
         </div>
 
-        <div class="features">
-            <h3>Funcionalidades:</h3>
+        <div class="nav-menu">
+            <a href="#inicio" data-translate="navInicio">Início</a>
+            <a href="#conceitos" data-translate="navConceitos">Conceitos</a>
+            <a href="#seguranca" data-translate="navSeguranca">Segurança</a>
+            <a href="#tecnico" data-translate="navTecnico">Técnico</a>
+            <a href="#juridico" data-translate="navJuridico">Jurídico</a>
+        </div>
+
+        <div id="inicio" class="section">
+            <h2 data-translate="bemVindo">Bem-vindo ao TraceGuard</h2>
+            <p data-translate="descricao">O <strong>TraceGuard</strong> é um sistema avançado de coleta de evidências digitais desenvolvido para auxiliar profissionais do direito, investigadores e analistas de segurança da informação na obtenção de dados web de forma sistemática e confiável.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 data-translate="coletaCompleta">Coleta Completa</h3>
+                    <p data-translate="coletaDesc">Captura screenshots, headers HTTP, informações WHOIS, registros DNS e certificados TLS de qualquer URL.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 data-translate="integridade">Integridade Garantida</h3>
+                    <p data-translate="integridadeDesc">Todos os arquivos são protegidos por hashes SHA-256, garantindo sua autenticidade e integridade.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3 data-translate="relatorioJuridico">Relatório Jurídico</h3>
+                    <p data-translate="relatorioDesc">Gera relatórios profissionais em PDF, prontos para serem anexados em processos judiciais.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-translate="rapido">Rápido e Eficiente</h3>
+                    <p data-translate="rapidoDesc">Processamento otimizado com tecnologia Playwright para coleta precisa e veloz.</p>
+                </div>
+            </div>
+
+            <div class="security-badge" data-translate="valorProbatorio">
+                ✅ Valor Probatório - Adequado para uso em processos jurídicos
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="public/sistema.html" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 1.2em; display: inline-block; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);" data-translate="testeSistema">
+                    🚀 Teste o Sistema Agora
+                </a>
+            </div>
+
+        </div>
+
+        <div id="conceitos" class="section">
+            <h2 data-translate="conceitosTitle">Conceitos Fundamentais</h2>
+
+            <h3 data-translate="evidenciaDigital">O que são Evidências Digitais?</h3>
+            <p data-translate="evidenciaDesc"><strong>Evidências Digitais</strong> são qualquer tipo de informação armazenada ou transmitida em formato digital que pode ser utilizada para provar ou refutar fatos em um contexto jurídico, investigação ou análise de segurança.</p>
+
+            <h3 data-translate="cadeiaCustodia">Cadeia de Custódia</h3>
+            <div class="info-box">
+                <p><strong>Cadeia de Custódia</strong> é o conjunto de procedimentos utilizados para manter e documentar a cronologia de posse de evidências, desde sua coleta até sua apresentação em juízo.</p>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-title">Coleta</div>
+                    <p>Primeira etapa onde as evidências são identificadas e coletadas do ambiente digital.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-title">Preservação</div>
+                    <p>Manutenção da integridade original dos dados coletados através de hashes e controles de acesso.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-title">Análise</div>
+                    <p>Exame detalhado dos dados coletados para identificação de padrões e informações relevantes.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-title">Apresentação</div>
+                    <p>Documentação final em formato adequado para uso em processos jurídicos ou relatórios técnicos.</p>
+                </div>
+            </div>
+
+            <h3>Tipos de Evidências Coletadas</h3>
             <ul>
-                <li>Screenshots em alta resolução (1366x768)</li>
-                <li>Coleta de headers HTTP completos</li>
-                <li>Análise de DNS e WHOIS</li>
-                <li>Informações de certificado TLS/SSL</li>
-                <li>Cálculo de hashes SHA-256</li>
-                <li>Manifest.json com cadeia de custódia</li>
-                <li>Exportação em formato ZIP</li>
+                <li><strong>Screenshots:</strong> Captura visual da página web no momento da coleta</li>
+                <li><strong>Headers HTTP:</strong> Informações técnicas da comunicação web</li>
+                <li><strong>WHOIS:</strong> Dados de registro do domínio</li>
+                <li><strong>DNS:</strong> Registros de resolução de nomes</li>
+                <li><strong>TLS/SSL:</strong> Certificados de segurança</li>
+                <li><strong>Hashes:</strong> Impressões digitais para verificação de integridade</li>
             </ul>
         </div>
+
+        <div id="seguranca" class="section">
+            <h2>Segurança da Informação</h2>
+
+            <h3>Princípios de Segurança Implementados</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Hashing SHA-256</h3>
+                    <p>Algoritmo de hashing criptográfico que gera uma "impressão digital" única para cada arquivo, impossibilitando alterações não detectadas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Timestamping</h3>
+                    <p>Registro preciso de data e hora (UTC) de cada coleta, estabelecendo uma linha temporal irrefutável.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Controle de Acesso</h3>
+                    <p>Sistema configurado com permissões adequadas (www-data) para operação segura em ambiente web.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Auditoria Completa</h3>
+                    <p>Registro detalhado de todas as operações realizadas durante o processo de coleta.</p>
+                </div>
+            </div>
+
+            <h3>Medidas de Proteção</h3>
+            <div class="warning-box">
+                <p><strong>Importante:</strong> O sistema implementa medidas de segurança para garantir que as evidências coletadas mantenham sua integridade e autenticidade ao longo de todo o processo.</p>
+            </div>
+
+            <ul>
+                <li>Armazenamento seguro em diretórios com permissões controladas</li>
+                <li>Geração automática de hashes para verificação de integridade</li>
+                <li>Registro detalhado de metadados de coleta</li>
+                <li>Relatórios em formato PDF com metadados de segurança</li>
+            </ul>
+        </div>
+
+        <div id="tecnico" class="section">
+            <h2>Aspectos Técnicos</h2>
+
+            <h3>Tecnologias Utilizadas</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🐍</div>
+                    <h3>Python 3.8+</h3>
+                    <p>Linguagem principal para coleta e processamento de dados</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Playwright</h3>
+                    <p>Framework para automação de navegadores e captura de screenshots</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>ReportLab</h3>
+                    <p>Biblioteca para geração de relatórios PDF profissionais</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>HTTPx</h3>
+                    <p>Cliente HTTP moderno para coleta de headers e informações web</p>
+                </div>
+            </div>
+
+            <h3>Workflow de Coleta</h3>
+            <div class="workflow-diagram">
+                <div class="workflow-step">1<br>Requisição</div>
+                →
+                <div class="workflow-step">2<br>Coleta</div>
+                →
+                <div class="workflow-step">3<br>Análise</div>
+                →
+                <div class="workflow-step">4<br>Hashing</div>
+                →
+                <div class="workflow-step">5<br>Relatório</div>
+                →
+                <div class="workflow-step">6<br>ZIP</div>
+            </div>
+
+        </div>
+
+        <div id="juridico" class="section">
+            <h2>Aplicações Jurídicas</h2>
+
+            <h3>Validade Legal</h3>
+            <div class="security-badge">
+                ✅ Relatórios gerados pelo TraceGuard possuem valor probatório reconhecido
+            </div>
+
+            <p>O sistema TraceGuard foi desenvolvido especificamente para atender às necessidades do ambiente jurídico brasileiro, produzindo evidências digitais que podem ser utilizadas em:</p>
+
+            <h3>Áreas de Aplicação</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>Processos Civis</h3>
+                    <p>Prova de conteúdo web em disputas contratuais, direitos autorais e difamação online.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Crimes Cibernéticos</h3>
+                    <p>Documentação de fraudes, golpes virtuais e outros delitos digitais.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍💼</div>
+                    <h3>Direito Trabalhista</h3>
+                    <p>Evidências de assédio virtual, quebra de contrato e má conduta online.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Compliance</h3>
+                    <p>Auditorias internas e investigações corporativas de conformidade.</p>
+                </div>
+            </div>
+
+            <h3>Vantagens Jurídicas</h3>
+            <ul>
+                <li><strong>Autenticidade:</strong> Hashes criptográficos garantem que os arquivos não foram alterados</li>
+                <li><strong>Temporalidade:</strong> Timestamps precisos estabelecem quando a coleta foi realizada</li>
+                <li><strong>Completeza:</strong> Captura abrangente de todos os aspectos técnicos relevantes</li>
+                <li><strong>Profissionalismo:</strong> Relatórios em formato adequado para apresentação judicial</li>
+                <li><strong>Confiabilidade:</strong> Processo automatizado e repetível</li>
+            </ul>
+
+            <h3>Como Utilizar em Processo Judicial</h3>
+            <div class="warning-box">
+                <p><strong>Recomendação:</strong> Sempre consulte um advogado especializado para orientação específica sobre o uso de evidências digitais em seu caso.</p>
+            </div>
+
+            <ol>
+                <li><strong>Coleta:</strong> Execute o TraceGuard no momento oportuno para capturar as evidências</li>
+                <li><strong>Preservação:</strong> Mantenha os arquivos ZIP gerados em local seguro</li>
+                <li><strong>Documentação:</strong> Registre em ata notarial ou documento específico a coleta realizada</li>
+                <li><strong>Apresentação:</strong> Anexe o relatório PDF e arquivos ZIP como evidência no processo</li>
+                <li><strong>Validação:</strong> Os hashes podem ser verificados para confirmar integridade</li>
+            </ol>
+        </div>
+
+        <div class="footer">
+            <p style="margin: 0; font-size: 1.1em; font-weight: bold;">
+                TraceGuard 2025 - by <a href="https://instagram.com/peritosegurancadainformacao" target="_blank" style="color: #ffc107; text-decoration: none;">Osvaldo Janeri Filho</a> |
+                <a href="https://www.linkedin.com/in/osvaldo-janeri-filho-66794114" target="_blank" style="color: #0077b5; text-decoration: none;">LinkedIn</a> |
+                <a href="https://github.com/ojaneri/traceguard" target="_blank" style="color: #333; text-decoration: none;">GitHub</a>
+            </p>
+        </div>
     </div>
+
+    <script>
+        // Sistema de tradução
+        const translations = {
+            pt: {
+                title: "Documentação - TraceGuard",
+                subtitle: "Sistema de Coleta de Evidências Digitais",
+                navInicio: "Início",
+                navConceitos: "Conceitos",
+                navSeguranca: "Segurança",
+                navTecnico: "Técnico",
+                navJuridico: "Jurídico",
+                bemVindo: "Bem-vindo ao TraceGuard",
+                descricao: "O <strong>TraceGuard</strong> é um sistema avançado de coleta de evidências digitais desenvolvido para auxiliar profissionais do direito, investigadores e analistas de segurança da informação na obtenção de dados web de forma sistemática e confiável.",
+                coletaCompleta: "Coleta Completa",
+                coletaDesc: "Captura screenshots, headers HTTP, informações WHOIS, registros DNS e certificados TLS de qualquer URL.",
+                integridade: "Integridade Garantida",
+                integridadeDesc: "Todos os arquivos são protegidos por hashes SHA-256, garantindo sua autenticidade e integridade.",
+                relatorioJuridico: "Relatório Jurídico",
+                relatorioDesc: "Gera relatórios profissionais em PDF, prontos para serem anexados em processos judiciais.",
+                rapido: "Rápido e Eficiente",
+                rapidoDesc: "Processamento otimizado com tecnologia Playwright para coleta precisa e veloz.",
+                valorProbatorio: "Valor Probatório - Adequado para uso em processos jurídicos",
+                testeSistema: "Teste o Sistema Agora",
+                conceitosTitle: "Conceitos Fundamentais",
+                evidenciaDigital: "O que são Evidências Digitais?",
+                evidenciaDesc: "<strong>Evidências Digitais</strong> são qualquer tipo de informação armazenada ou transmitida em formato digital que pode ser utilizada para provar ou refutar fatos em um contexto jurídico, investigação ou análise de segurança.",
+                cadeiaCustodia: "Cadeia de Custódia",
+                cadeiaDesc: "<strong>Cadeia de Custódia</strong> é o conjunto de procedimentos utilizados para manter e documentar a cronologia de posse de evidências, desde sua coleta até sua apresentação em juízo.",
+                tiposEvidencia: "Tipos de Evidências Coletadas",
+                segurancaTitle: "Segurança da Informação",
+                principiosSeguranca: "Princípios de Segurança Implementados",
+                hashing: "Hashing SHA-256",
+                hashingDesc: "Algoritmo de hashing criptográfico que gera uma \"impressão digital\" única para cada arquivo, impossibilitando alterações não detectadas.",
+                timestamping: "Timestamping",
+                timestampingDesc: "Registro preciso de data e hora (UTC) de cada coleta, estabelecendo uma linha temporal irrefutável.",
+                controleAcesso: "Controle de Acesso",
+                controleDesc: "Sistema configurado com permissões adequadas (www-data) para operação segura em ambiente web.",
+                auditoria: "Auditoria Completa",
+                auditoriaDesc: "Registro detalhado de todas as operações realizadas durante o processo de coleta.",
+                medidasProtecao: "Medidas de Proteção",
+                importante: "Importante:",
+                medidasDesc: "O sistema implementa medidas de segurança para garantir que as evidências coletadas mantenham sua integridade e autenticidade ao longo de todo o processo.",
+                tecnicoTitle: "Aspectos Técnicos",
+                tecnologias: "Tecnologias Utilizadas",
+                python: "Python 3.8+",
+                pythonDesc: "Linguagem principal para coleta e processamento de dados",
+                playwright: "Playwright",
+                playwrightDesc: "Framework para automação de navegadores e captura de screenshots",
+                reportlab: "ReportLab",
+                reportlabDesc: "Biblioteca para geração de relatórios PDF profissionais",
+                httpx: "HTTPx",
+                httpxDesc: "Cliente HTTP moderno para coleta de headers e informações web",
+                workflow: "Workflow de Coleta",
+                juridicoTitle: "Aplicações Jurídicas",
+                validadeLegal: "Validade Legal",
+                validadeDesc: "Relatórios gerados pelo TraceGuard possuem valor probatório reconhecido",
+                areasAplicacao: "Áreas de Aplicação",
+                processosCivis: "Processos Civis",
+                processosDesc: "Prova de conteúdo web em disputas contratuais, direitos autorais e difamação online.",
+                crimesCiberneticos: "Crimes Cibernéticos",
+                crimesDesc: "Documentação de fraudes, golpes virtuais e outros delitos digitais.",
+                direitoTrabalhista: "Direito Trabalhista",
+                trabalhistaDesc: "Evidências de assédio virtual, quebra de contrato e má conduta online.",
+                compliance: "Compliance",
+                complianceDesc: "Auditorias internas e investigações corporativas de conformidade.",
+                vantagensJuridicas: "Vantagens Jurídicas",
+                autenticidade: "Autenticidade:",
+                autenticidadeDesc: "Hashes criptográficos garantem que os arquivos não foram alterados",
+                temporalidade: "Temporalidade:",
+                temporalidadeDesc: "Timestamps precisos estabelecem quando a coleta foi realizada",
+                completeza: "Completeza:",
+                completezaDesc: "Captura abrangente de todos os aspectos técnicos relevantes",
+                profissionalismo: "Profissionalismo:",
+                profissionalismoDesc: "Relatórios em formato adequado para apresentação judicial",
+                confiabilidade: "Confiabilidade:",
+                confiabilidadeDesc: "Processo automatizado e repetível",
+                comoUtilizar: "Como Utilizar em Processo Judicial",
+                recomendacao: "Recomendação:",
+                recomendacaoDesc: "Sempre consulte um advogado especializado para orientação específica sobre o uso de evidências digitais em seu caso.",
+                footerTitle: "TraceGuard - Sistema de Coleta de Evidências Digitais",
+                footerDesc: "Para uso profissional em análises de segurança e processos jurídicos"
+            },
+            en: {
+                title: "Documentation - TraceGuard",
+                subtitle: "Digital Evidence Collection System",
+                navInicio: "Home",
+                navConceitos: "Concepts",
+                navSeguranca: "Security",
+                navTecnico: "Technical",
+                navJuridico: "Legal",
+                bemVindo: "Welcome to TraceGuard",
+                descricao: "<strong>TraceGuard</strong> is an advanced digital evidence collection system developed to assist legal professionals, investigators and security analysts in obtaining web data in a systematic and reliable manner.",
+                coletaCompleta: "Complete Collection",
+                coletaDesc: "Captures screenshots, HTTP headers, WHOIS information, DNS records and TLS certificates from any URL.",
+                integridade: "Guaranteed Integrity",
+                integridadeDesc: "All files are protected by SHA-256 hashes, ensuring their authenticity and integrity.",
+                relatorioJuridico: "Legal Report",
+                relatorioDesc: "Generates professional PDF reports, ready to be attached to legal proceedings.",
+                rapido: "Fast and Efficient",
+                rapidoDesc: "Optimized processing with Playwright technology for precise and fast collection.",
+                valorProbatorio: "Probative Value - Suitable for use in legal proceedings",
+                testeSistema: "Test the System Now",
+                conceitosTitle: "Fundamental Concepts",
+                evidenciaDigital: "What are Digital Evidences?",
+                evidenciaDesc: "<strong>Digital Evidences</strong> are any type of information stored or transmitted in digital format that can be used to prove or refute facts in a legal, investigative or security analysis context.",
+                cadeiaCustodia: "Chain of Custody",
+                cadeiaDesc: "<strong>Chain of Custody</strong> is the set of procedures used to maintain and document the chronology of possession of evidence, from its collection to its presentation in court.",
+                tiposEvidencia: "Types of Evidence Collected",
+                segurancaTitle: "Information Security",
+                principiosSeguranca: "Implemented Security Principles",
+                hashing: "SHA-256 Hashing",
+                hashingDesc: "Cryptographic hashing algorithm that generates a unique \"fingerprint\" for each file, making undetected changes impossible.",
+                timestamping: "Timestamping",
+                timestampingDesc: "Precise record of date and time (UTC) of each collection, establishing an irrefutable timeline.",
+                controleAcesso: "Access Control",
+                controleDesc: "System configured with appropriate permissions (www-data) for secure operation in web environment.",
+                auditoria: "Complete Audit",
+                auditoriaDesc: "Detailed record of all operations performed during the collection process.",
+                medidasProtecao: "Protection Measures",
+                importante: "Important:",
+                medidasDesc: "The system implements security measures to ensure that collected evidence maintains its integrity and authenticity throughout the entire process.",
+                tecnicoTitle: "Technical Aspects",
+                tecnologias: "Technologies Used",
+                python: "Python 3.8+",
+                pythonDesc: "Main language for data collection and processing",
+                playwright: "Playwright",
+                playwrightDesc: "Framework for browser automation and screenshot capture",
+                reportlab: "ReportLab",
+                reportlabDesc: "Library for generating professional PDF reports",
+                httpx: "HTTPx",
+                httpxDesc: "Modern HTTP client for collecting headers and web information",
+                workflow: "Collection Workflow",
+                juridicoTitle: "Legal Applications",
+                validadeLegal: "Legal Validity",
+                validadeDesc: "Reports generated by TraceGuard have recognized probative value",
+                areasAplicacao: "Application Areas",
+                processosCivis: "Civil Proceedings",
+                processosDesc: "Proof of web content in contractual disputes, copyright and online defamation.",
+                crimesCiberneticos: "Cyber Crimes",
+                crimesDesc: "Documentation of fraud, virtual scams and other digital crimes.",
+                direitoTrabalhista: "Labor Law",
+                trabalhistaDesc: "Evidence of virtual harassment, contract breach and online misconduct.",
+                compliance: "Compliance",
+                complianceDesc: "Internal audits and corporate compliance investigations.",
+                vantagensJuridicas: "Legal Advantages",
+                autenticidade: "Authenticity:",
+                autenticidadeDesc: "Cryptographic hashes guarantee that files have not been altered",
+                temporalidade: "Temporality:",
+                temporalidadeDesc: "Precise timestamps establish when collection was performed",
+                completeza: "Completeness:",
+                completezaDesc: "Comprehensive capture of all relevant technical aspects",
+                profissionalismo: "Professionalism:",
+                profissionalismoDesc: "Reports in appropriate format for judicial presentation",
+                confiabilidade: "Reliability:",
+                confiabilidadeDesc: "Automated and repeatable process",
+                comoUtilizar: "How to Use in Legal Proceedings",
+                recomendacao: "Recommendation:",
+                recomendacaoDesc: "Always consult a specialized lawyer for specific guidance on the use of digital evidence in your case.",
+                footerTitle: "TraceGuard - Digital Evidence Collection System",
+                footerDesc: "For professional use in security analysis and legal proceedings"
+            }
+        };
+
+        // Detecta idioma do navegador
+        function detectLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            return browserLang.startsWith('pt') ? 'pt' : 'en';
+        }
+
+        // Traduz elemento
+        function translateElement(element, lang) {
+            const key = element.getAttribute('data-translate');
+            if (key && translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+
+            // Traduz placeholders
+            const placeholder = element.getAttribute('data-translate-placeholder');
+            if (placeholder && translations[lang][placeholder]) {
+                element.placeholder = translations[lang][placeholder];
+            }
+        }
+
+        // Traduz página
+        function translatePage(lang) {
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                translateElement(el, lang);
+            });
+
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                translateElement(el, lang);
+            });
+
+            // Atualiza idioma do documento
+            document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en-US';
+
+            // Salva preferência
+            localStorage.setItem('traceguard-language', lang);
+        }
+
+        // Troca idioma
+        function changeLanguage() {
+            const select = document.getElementById('languageSelect');
+            const lang = select.value;
+            translatePage(lang);
+        }
+
+        // Inicializa traduções
+        function initTranslations() {
+            // Carrega idioma salvo ou detecta automaticamente
+            const savedLang = localStorage.getItem('traceguard-language');
+            const lang = savedLang || detectLanguage();
+
+            // Define idioma no seletor
+            document.getElementById('languageSelect').value = lang;
+
+            // Traduz página
+            translatePage(lang);
+        }
+
+        // Inicializa quando DOM carrega
+        document.addEventListener('DOMContentLoaded', initTranslations);
+    </script>
 </body>
 </html>

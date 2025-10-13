@@ -7,18 +7,93 @@
   <link href="./style.css" rel="stylesheet">
 </head>
 <body>
-<header><h1>TraceGuard</h1></header>
+<header>
+  <h1>TraceGuard</h1>
+  <nav>
+    <a href="documentacao.html" target="_blank">📖 Documentação</a>
+  </nav>
+</header>
 <main>
   <div class="card">
     <p class="small">Informe a URL a ser coletada. O sistema fará screenshot, coletará headers HTTP, WHOIS/DNS/TLS, calculará SHA-256 e gerará um ZIP com todos os artefatos + manifest.json.</p>
-    <form action="collect.php" method="post">
+    <form action="collect.php" method="post" id="collectForm">
       <label>URL alvo:
-        <input type="url" name="url" placeholder="https://exemplo.com/pagina" required>
+        <input type="url" name="url" placeholder="https://exemplo.com/pagina" required id="urlInput">
       </label>
-      <button type="submit">Coletar e gerar ZIP</button>
+      <button type="submit" id="submitBtn">Coletar e gerar ZIP</button>
     </form>
+    <div id="loading" style="display: none;">
+      <div style="background: #3b82f6; color: white; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <div style="width: 20px; height: 20px; border: 2px solid #ffffff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <span>Processando coleta de evidências...</span>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 <footer><small>© 2025 TraceGuard – MVP educacional</small></footer>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading {
+    margin-top: 15px;
+}
+
+.processing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    color: white;
+    font-size: 1.2em;
+}
+
+.processing-content {
+    text-align: center;
+    background: rgba(59, 130, 246, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+</style>
+
+<script>
+document.getElementById('collectForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const loading = document.getElementById('loading');
+    const urlInput = document.getElementById('urlInput');
+
+    // Desabilita o botão e mostra loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processando...';
+    loading.style.display = 'block';
+
+    // Cria overlay de processamento
+    const overlay = document.createElement('div');
+    overlay.className = 'processing-overlay';
+    overlay.innerHTML = `
+        <div class="processing-content">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                <div style="width: 30px; height: 30px; border: 3px solid #ffffff; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <span>Coletando evidências digitais...</span>
+            </div>
+            <p>URL: ${urlInput.value}</p>
+            <p>Esta operação pode levar alguns minutos.</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+});
+</script>
 </body>
 </html>

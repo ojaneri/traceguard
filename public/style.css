@@ -1,5 +1,8 @@
 body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;background:#0f172a;color:#e5e7eb}
 header,footer{padding:16px;text-align:center;background:#111827}
+header{display:flex;justify-content:space-between;align-items:center}
+header nav a{background:#3b82f6;color:white;padding:8px 16px;border-radius:6px;text-decoration:none;font-weight:500}
+header nav a:hover{background:#2563eb}
 main{max-width:900px;margin:0 auto;padding:24px}
 .card{background:#1f2937;padding:16px;border-radius:12px}
 label{display:block;margin:8px 0}
