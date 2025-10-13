@@ -32,9 +32,10 @@ $outDir = $storage . '/' . $runId;
 mkdir($outDir, 0775, true);
 
 // Chama o worker Python
-$py = escapeshellcmd('python3');
+$py = escapeshellcmd($base . '/worker/.venv/bin/python3');
 $script = escapeshellarg($base . '/worker/collector.py');
-$cmd = $py . ' ' . $script
+$env_path = escapeshellarg('/var/www/.cache/ms-playwright');
+$cmd = 'PLAYWRIGHT_BROWSERS_PATH=' . $env_path . ' ' . $py . ' ' . $script
     . ' --url ' . escapeshellarg($url)
     . ' --outdir ' . escapeshellarg($outDir)
     . ' --request_ip ' . escapeshellarg($clientIp ?? '')

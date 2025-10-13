@@ -1,3 +1,4 @@
+salvar-git.sh
 /storage/*
 !.gitkeep
 __pycache__/
