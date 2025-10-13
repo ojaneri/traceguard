@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceGuard - Web Evidence Collector</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #e5e7eb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            color: #3b82f6;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .description {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background 0.3s;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .btn.secondary {
+            background: transparent;
+            border: 2px solid #3b82f6;
+        }
+        .btn.secondary:hover {
+            background: #3b82f6;
+        }
+        .features {
+            margin-top: 40px;
+            text-align: left;
+        }
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        .features li {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .features li:before {
+            content: "🔒";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TraceGuard</h1>
+        <p class="description">
+            Sistema avançado para coleta de evidências web com preservação de cadeia de custódia.
+            Capture screenshots, metadados e gere relatórios completos de qualquer URL.
+        </p>
+
+        <div>
+            <a href="public/" class="btn">🚀 Acessar Aplicação</a>
+            <a href="README.md" class="btn secondary">📖 Documentação</a>
+        </div>
+
+        <div class="features">
+            <h3>Funcionalidades:</h3>
+            <ul>
+                <li>Screenshots em alta resolução (1366x768)</li>
+                <li>Coleta de headers HTTP completos</li>
+                <li>Análise de DNS e WHOIS</li>
+                <li>Informações de certificado TLS/SSL</li>
+                <li>Cálculo de hashes SHA-256</li>
+                <li>Manifest.json com cadeia de custódia</li>
+                <li>Exportação em formato ZIP</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

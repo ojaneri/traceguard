@@ -2,11 +2,15 @@
 
 **O que faz:** Recebe uma URL → faz **screenshot** em navegador headless, coleta **headers HTTP**, **DNS/WHOIS**, **TLS/certificado**, registra **timestamp UTC** e dados do solicitante (IP/UA), calcula **SHA-256** de cada artefato e gera um **ZIP** com tudo + `manifest.json` para preservar a **cadeia de custódia**.
 
-## Rodando
+## 🌐 Demonstração
+**Acesse:** [https://janeri.com.br/sistemas/traceguard/](https://janeri.com.br/sistemas/traceguard/)
+
+## Acesso
+A aplicação está disponível em: **https://janeri.com.br/sistemas/traceguard/**
+
+## Setup (apenas uma vez)
 ```bash
-make setup
-make serve
-# acesse http://localhost:8080
+make setup  # Instala dependências Python e Playwright
 ```
 
 ## Saída
